@@ -5,40 +5,73 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 
-import { memberSchema, type MemberFormData } from "@/lib/member-schema";
-import { registerMemberAction, type ActionState } from "@/app/cadastro/actions";
+import {
+  memberSchema,
+  type MemberFormData,
+} from "@/lib/member-schema";
 
-import FormProgress       from "./FormProgress";
+import {
+  requestRegistrationVerification,
+  confirmRegistration,
+  type ActionState,
+} from "@/app/cadastro/actions";
+
+import FormProgress from "./FormProgress";
 import StepIdentification from "./StepIdentification";
-import StepPersonal       from "./StepPersonal";
-import StepAcademic       from "./StepAcademic";
-import StepReview         from "./StepReview";
-import SuccessScreen      from "./SuccessScreen";
+import StepPersonal from "./StepPersonal";
+import StepAcademic from "./StepAcademic";
+import StepReview from "./StepReview";
+import VerificationScreen from "./VerificationScreen";
+import SuccessScreen from "./SuccessScreen";
 
 const STEP_FIELDS: (keyof MemberFormData)[][] = [
-  ["full_name", "institutional_email", "phone"],
-  ["birth_date", "gender", "color"],
-  ["course", "course_registration", "semester"],
+  [
+    "full_name",
+    "institutional_email",
+    "phone",
+  ],
+  [
+    "birth_date",
+    "gender",
+    "color",
+  ],
+  [
+    "course",
+    "course_registration",
+    "semester",
+  ],
   [],
 ];
 
 const TOTAL_STEPS = 4;
 
 export default function MemberForm() {
-  const [step, setStep]                 = useState(1);
-  const [consent, setConsent]           = useState(false);
+  const [step, setStep] = useState(1);
+  const [consent, setConsent] = useState(false);
   const [consentError, setConsentError] = useState("");
-  const [actionState, setActionState]   = useState<ActionState>({ status: "idle" });
-  const [isPending, startTransition]    = useTransition();
+
+  const [actionState, setActionState] =
+    useState<ActionState>({
+      status: "idle",
+    });
+
+  const [isPending, startTransition] =
+    useTransition();
 
   const form = useForm<MemberFormData>({
     resolver: zodResolver(memberSchema),
     mode: "onTouched",
+
     defaultValues: {
-      full_name: "", institutional_email: "", phone: "",
-      birth_date: "", gender: "" as never,
-      color: "" as never, course: "" as never,
-      course_registration: "", semester: "",
+      full_name: "",
+      institutional_email: "",
+      phone: "",
+      birth_date: "",
+      gender: "" as never,
+      color: "" as never,
+      course: "" as never,
+      course_registration: "",
+      semester: "",
     },
   });
 
@@ -46,37 +79,88 @@ export default function MemberForm() {
 
   async function goNext() {
     const fields = STEP_FIELDS[step - 1];
-    const valid  = fields.length ? await trigger(fields) : true;
+
+    const valid = fields.length
+      ? await trigger(fields)
+      : true;
+
     if (!valid) return;
 
     if (step === TOTAL_STEPS) {
-      if (!consent) { setConsentError("Aceite os termos para continuar."); return; }
+      if (!consent) {
+        setConsentError(
+          "Aceite os termos para continuar."
+        );
+        return;
+      }
+
       handleSubmit(onSubmit)();
       return;
     }
-    setStep((s) => s + 1);
+
+    setStep((current) => current + 1);
   }
 
   function goBack() {
-    if (step > 1) setStep((s) => s - 1);
+    if (step > 1) {
+      setStep((current) => current - 1);
+    }
   }
 
   function onSubmit(data: MemberFormData) {
     startTransition(async () => {
-      const fd = new FormData();
-      Object.entries(data).forEach(([k, v]) => fd.append(k, v));
-      const result = await registerMemberAction({ status: "idle" }, fd);
+      const formData = new FormData();
+
+      Object.entries(data).forEach(
+        ([key, value]) => {
+          formData.append(key, value);
+        }
+      );
+
+      const result =
+        await requestRegistrationVerification(
+          { status: "idle" },
+          formData
+        );
+
       setActionState(result);
     });
   }
 
+  function handleVerification(otc: string) {
+    startTransition(async () => {
+      const result =
+        await confirmRegistration(otc);
+
+      setActionState(result);
+    });
+  }
+
+  if (
+    actionState.status ===
+    "verification_sent"
+  ) {
+    return (
+      <VerificationScreen
+        email={actionState.email}
+        isPending={isPending}
+        onVerify={handleVerification}
+      />
+    );
+  }
+
   if (actionState.status === "success") {
-    return <SuccessScreen email={actionState.email} otc={actionState.otc} />;
+    return (
+      <SuccessScreen
+        email={actionState.email}
+      />
+    );
   }
 
   return (
     <div>
       <FormProgress currentStep={step} />
+
       <hr className="border-[#e5e5e5] mb-6" />
 
       {actionState.status === "error" && (
@@ -85,15 +169,37 @@ export default function MemberForm() {
         </div>
       )}
 
-      {step === 1 && <StepIdentification form={form} />}
-      {step === 2 && <StepPersonal form={form} />}
-      {step === 3 && <StepAcademic form={form} />}
+      {actionState.status ===
+        "validation_error" && (
+        <div className="mb-4 rounded-lg bg-[#fff0f0] border border-[#f5c6c6] px-4 py-3 text-[13px] text-[#ba1a1a]">
+          Verifique os campos preenchidos.
+        </div>
+      )}
+
+      {step === 1 && (
+        <StepIdentification form={form} />
+      )}
+
+      {step === 2 && (
+        <StepPersonal form={form} />
+      )}
+
+      {step === 3 && (
+        <StepAcademic form={form} />
+      )}
+
       {step === 4 && (
         <StepReview
           form={form}
           consentError={consentError}
           consentChecked={consent}
-          onConsentChange={(v) => { setConsent(v); if (v) setConsentError(""); }}
+          onConsentChange={(value) => {
+            setConsent(value);
+
+            if (value) {
+              setConsentError("");
+            }
+          }}
         />
       )}
 
@@ -101,7 +207,9 @@ export default function MemberForm() {
         <button
           type="button"
           onClick={goBack}
-          disabled={step === 1}
+          disabled={
+            step === 1 || isPending
+          }
           className="h-10 px-5 rounded-lg text-[14px] font-medium border border-[#d1d1d1] text-[#555] bg-white hover:bg-[#f5f5f5] disabled:opacity-30 disabled:pointer-events-none transition-colors"
         >
           Voltar
@@ -117,8 +225,16 @@ export default function MemberForm() {
           disabled={isPending}
           className="h-10 px-6 rounded-lg text-[14px] font-semibold text-white bg-[#c8181e] hover:bg-[#a81419] disabled:opacity-60 disabled:pointer-events-none transition-colors flex items-center gap-2"
         >
-          {isPending && <Loader2 size={14} className="animate-spin" />}
-          {step === TOTAL_STEPS ? "Confirmar cadastro" : "Continuar"}
+          {isPending && (
+            <Loader2
+              size={14}
+              className="animate-spin"
+            />
+          )}
+
+          {step === TOTAL_STEPS
+            ? "Enviar código por e-mail"
+            : "Continuar"}
         </button>
       </div>
     </div>
