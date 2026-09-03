@@ -1,9 +1,8 @@
 import { z } from "zod";
-import { INSTITUTIONAL_DOMAIN, COURSES, COLORS, SEXES, GENDERS } from "./domain";
+import { COURSES, COLORS, GENDERS, isInstitutionalEmail } from "./domain";
 
 const courseValues  = COURSES.map((c) => c.value) as [string, ...string[]];
 const colorValues   = COLORS.map((c)  => c.value) as [string, ...string[]];
-const sexValues     = SEXES.map((s)   => s.value) as [string, ...string[]];
 const genderValues  = GENDERS.map((g) => g.value) as [string, ...string[]];
 
 export const memberSchema = z.object({
@@ -20,8 +19,8 @@ export const memberSchema = z.object({
     .trim()
     .toLowerCase()
     .email("Informe um e-mail válido.")
-    .refine((v) => v.endsWith(`@${INSTITUTIONAL_DOMAIN}`), {
-      message: `Use o e-mail @${INSTITUTIONAL_DOMAIN}.`,
+    .refine(isInstitutionalEmail, {
+      message: "Use o e-mail @cimatecjr.com.br ou o formato trainee (nome.cimatecjr@gmail.com).",
     }),
 
   phone: z
@@ -34,10 +33,6 @@ export const memberSchema = z.object({
     .string()
     .min(1, "Informe a data de nascimento.")
     .refine((v) => !isNaN(Date.parse(v)), { message: "Data inválida." }),
-
-  sex: z
-    .string()
-    .refine((v) => sexValues.includes(v), { message: "Selecione uma opção." }),
 
   gender: z
     .string()

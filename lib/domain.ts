@@ -1,6 +1,15 @@
 export const INSTITUTIONAL_DOMAIN =
   process.env.INSTITUTIONAL_EMAIL_DOMAIN ?? "cimatecjr.com.br";
 
+// E-mail válido se termina com @cimatecjr.com.br
+// ou se segue o padrão de trainee: xxxx.xxxx.cimatecjr@gmail.com
+export function isInstitutionalEmail(email: string): boolean {
+  const lower = email.toLowerCase().trim();
+  const domainOk  = lower.endsWith(`@${INSTITUTIONAL_DOMAIN}`);
+  const traineeOk = /^[\w.+-]+\.cimatecjr@gmail\.com$/.test(lower);
+  return domainOk || traineeOk;
+}
+
 export const COURSES = [
   { value: "eng-computacao",  label: "Engenharia de Computação" },
   { value: "eng-civil",       label: "Engenharia Civil" },
@@ -21,12 +30,6 @@ export const COLORS = [
   { value: "outra",    label: "Outra" },
 ] as const;
 
-export const SEXES = [
-  { value: "masculino", label: "Masculino" },
-  { value: "feminino",  label: "Feminino" },
-  { value: "outro",     label: "Outro" },
-] as const;
-
 export const GENDERS = [
   { value: "masculino", label: "Masculino" },
   { value: "feminino",  label: "Feminino" },
@@ -40,5 +43,4 @@ export const SEMESTERS = Array.from({ length: 10 }, (_, i) => ({
 
 export type CourseValue  = typeof COURSES[number]["value"];
 export type ColorValue   = typeof COLORS[number]["value"];
-export type SexValue     = typeof SEXES[number]["value"];
 export type GenderValue  = typeof GENDERS[number]["value"];

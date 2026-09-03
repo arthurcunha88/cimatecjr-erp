@@ -5,18 +5,13 @@ export type ServiceResult<T = void> =
   | { ok: true; data: T }
   | { ok: false; error: string; field?: string };
 
-// ─── OTC ────────────────────────────────────────────────────────────────────
-
 function generateOTC(): string {
   return String(Math.floor(10000 + Math.random() * 90000));
 }
 
-// ─── Register member + OTC ───────────────────────────────────────────────────
-
 export async function registerMember(
   input: MemberFormData
 ): Promise<ServiceResult<{ memberId: string; otc: string }>> {
-  // 1. Insert member
   const { data: member, error: insertError } = await supabaseAdmin
     .from("members")
     .insert({
@@ -24,7 +19,6 @@ export async function registerMember(
       institutional_email: input.institutional_email,
       phone:               input.phone,
       birth_date:          input.birth_date,
-      sex:                 input.sex,
       gender:              input.gender,
       color:               input.color,
       course:              input.course,
@@ -35,13 +29,15 @@ export async function registerMember(
     .single();
 
   if (insertError) {
-    // Violação de unicidade — código Postgres 23505
     if (insertError.code === "23505") {
       if (insertError.message.includes("institutional_email")) {
         return { ok: false, error: "Este e-mail já está cadastrado.", field: "institutional_email" };
       }
       if (insertError.message.includes("phone")) {
         return { ok: false, error: "Este telefone já está cadastrado.", field: "phone" };
+      }
+      if (insertError.message.includes("course_registration")) {
+        return { ok: false, error: "Esta matrícula já está cadastrada.", field: "course_registration" };
       }
       return { ok: false, error: "Já existe um cadastro com esses dados." };
     }
@@ -50,10 +46,8 @@ export async function registerMember(
   }
 
   const memberId = member.id as string;
-
-  // 2. Generate OTC
-  const otc     = generateOTC();
-  const expires = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // +10 min
+  const otc      = generateOTC();
+  const expires  = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
   const { error: otcError } = await supabaseAdmin.from("member_otcs").insert({
     member_id:  memberId,
@@ -65,7 +59,6 @@ export async function registerMember(
 
   if (otcError) {
     console.error("[member-service] otc insert error:", otcError);
-    // Membro foi salvo; OTC falhou — retorna erro mas não desfaz o cadastro
     return { ok: false, error: "Cadastro salvo, mas não foi possível gerar o código de confirmação." };
   }
 

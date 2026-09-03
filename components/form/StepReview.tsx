@@ -1,7 +1,7 @@
 "use client";
 
 import { UseFormReturn } from "react-hook-form";
-import { COURSES, COLORS, SEXES, GENDERS } from "@/lib/domain";
+import { COURSES, COLORS, GENDERS } from "@/lib/domain";
 import type { MemberFormData } from "@/lib/member-schema";
 
 interface Props {
@@ -35,9 +35,8 @@ export default function StepReview({
     ["E-mail",      values.institutional_email || "—"],
     ["Telefone",    values.phone || "—"],
     ["Nascimento",  birthFormatted],
-    ["Sexo",        label(SEXES as unknown as {value:string;label:string}[], values.sex)],
     ["Gênero",      label(GENDERS as unknown as {value:string;label:string}[], values.gender)],
-    ["Cor / raça",  label(COLORS as unknown as {value:string;label:string}[], values.color)],
+    ["Cor / raça",  label(COLORS  as unknown as {value:string;label:string}[], values.color)],
     ["Curso",       label(COURSES as unknown as {value:string;label:string}[], values.course)],
     ["Matrícula",   values.course_registration || "—"],
     ["Semestre",    values.semester ? `${values.semester}º semestre` : "—"],
@@ -52,15 +51,11 @@ export default function StepReview({
         </p>
       </div>
 
-      {/* Summary table */}
       <div className="border border-[#e5e5e5] rounded-xl overflow-hidden">
         <table className="w-full text-[13px]">
           <tbody>
             {rows.map(([k, v], i) => (
-              <tr
-                key={k}
-                className={i % 2 === 0 ? "bg-white" : "bg-[#f9f9f9]"}
-              >
+              <tr key={k} className={i % 2 === 0 ? "bg-white" : "bg-[#f9f9f9]"}>
                 <td className="px-4 py-2.5 text-[#888] w-32">{k}</td>
                 <td className="px-4 py-2.5 text-[#1a1c1c] font-medium text-right">{v}</td>
               </tr>
@@ -69,7 +64,6 @@ export default function StepReview({
         </table>
       </div>
 
-      {/* Consent */}
       <div className="bg-[#f9f9f9] border border-[#e5e5e5] border-l-4 border-l-[#c8181e] rounded-lg p-4">
         <p className="text-[12px] text-[#5f5e5e] leading-relaxed">
           Seus dados serão armazenados de forma segura no sistema interno da CIMATEC jr.

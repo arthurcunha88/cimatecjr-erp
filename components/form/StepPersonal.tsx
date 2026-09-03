@@ -3,7 +3,7 @@
 import { UseFormReturn } from "react-hook-form";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
-import { SEXES, GENDERS, COLORS } from "@/lib/domain";
+import { GENDERS, COLORS } from "@/lib/domain";
 import type { MemberFormData } from "@/lib/member-schema";
 
 interface Props {
@@ -31,22 +31,15 @@ export default function StepPersonal({ form }: Props) {
           {...register("birth_date")}
         />
         <Select
-          label="Sexo"
-          required
-          options={SEXES as unknown as { value: string; label: string }[]}
-          error={errors.sex?.message}
-          {...register("sex")}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Select
           label="Gênero"
           required
           options={GENDERS as unknown as { value: string; label: string }[]}
           error={errors.gender?.message}
           {...register("gender")}
         />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Select
           label="Cor / raça"
           required

@@ -8,17 +8,16 @@ import { Loader2 } from "lucide-react";
 import { memberSchema, type MemberFormData } from "@/lib/member-schema";
 import { registerMemberAction, type ActionState } from "@/app/cadastro/actions";
 
-import FormProgress    from "./FormProgress";
+import FormProgress       from "./FormProgress";
 import StepIdentification from "./StepIdentification";
-import StepPersonal    from "./StepPersonal";
-import StepAcademic    from "./StepAcademic";
-import StepReview      from "./StepReview";
-import SuccessScreen   from "./SuccessScreen";
+import StepPersonal       from "./StepPersonal";
+import StepAcademic       from "./StepAcademic";
+import StepReview         from "./StepReview";
+import SuccessScreen      from "./SuccessScreen";
 
-// Which fields belong to each step — for per-step validation
 const STEP_FIELDS: (keyof MemberFormData)[][] = [
   ["full_name", "institutional_email", "phone"],
-  ["birth_date", "sex", "gender", "color"],
+  ["birth_date", "gender", "color"],
   ["course", "course_registration", "semester"],
   [],
 ];
@@ -26,28 +25,24 @@ const STEP_FIELDS: (keyof MemberFormData)[][] = [
 const TOTAL_STEPS = 4;
 
 export default function MemberForm() {
-  const [step, setStep]               = useState(1);
-  const [consent, setConsent]         = useState(false);
+  const [step, setStep]                 = useState(1);
+  const [consent, setConsent]           = useState(false);
   const [consentError, setConsentError] = useState("");
-  const [actionState, setActionState] = useState<ActionState>({ status: "idle" });
-  const [isPending, startTransition]  = useTransition();
+  const [actionState, setActionState]   = useState<ActionState>({ status: "idle" });
+  const [isPending, startTransition]    = useTransition();
 
   const form = useForm<MemberFormData>({
     resolver: zodResolver(memberSchema),
     mode: "onTouched",
     defaultValues: {
       full_name: "", institutional_email: "", phone: "",
-      birth_date: "", sex: "" as never, gender: "" as never,
+      birth_date: "", gender: "" as never,
       color: "" as never, course: "" as never,
       course_registration: "", semester: "",
     },
   });
 
-  const { trigger, handleSubmit, formState: { errors } } = form;
-
-  // Server-side field errors injected into RHF
-  const serverErrors =
-    actionState.status === "validation_error" ? actionState.errors : {};
+  const { trigger, handleSubmit } = form;
 
   async function goNext() {
     const fields = STEP_FIELDS[step - 1];
@@ -56,11 +51,9 @@ export default function MemberForm() {
 
     if (step === TOTAL_STEPS) {
       if (!consent) { setConsentError("Aceite os termos para continuar."); return; }
-      // submit
       handleSubmit(onSubmit)();
       return;
     }
-
     setStep((s) => s + 1);
   }
 
@@ -77,25 +70,21 @@ export default function MemberForm() {
     });
   }
 
-  // ── Success ──────────────────────────────────────────────────────────────
   if (actionState.status === "success") {
     return <SuccessScreen email={actionState.email} otc={actionState.otc} />;
   }
 
-  // ── Form ─────────────────────────────────────────────────────────────────
   return (
     <div>
       <FormProgress currentStep={step} />
       <hr className="border-[#e5e5e5] mb-6" />
 
-      {/* Global server error */}
       {actionState.status === "error" && (
         <div className="mb-4 rounded-lg bg-[#fff0f0] border border-[#f5c6c6] px-4 py-3 text-[13px] text-[#ba1a1a]">
           {actionState.message}
         </div>
       )}
 
-      {/* Steps */}
       {step === 1 && <StepIdentification form={form} />}
       {step === 2 && <StepPersonal form={form} />}
       {step === 3 && <StepAcademic form={form} />}
@@ -108,7 +97,6 @@ export default function MemberForm() {
         />
       )}
 
-      {/* Navigation */}
       <div className="flex justify-between items-center mt-6 pt-5 border-t border-[#e5e5e5]">
         <button
           type="button"
