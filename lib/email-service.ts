@@ -11,7 +11,7 @@ export async function sendOTCEmail(params: {
   const firstName = name.split(" ")[0];
 
   const { error } = await resend.emails.send({
-    from:    "CIMATEC jr. <onboarding@resend.dev>", // troque pelo seu domínio verificado no Resend
+    from: "CIMATEC jr. <noreply@cimatecjr.com.br>", // troque pelo seu domínio verificado no Resend
     to:      [to],
     subject: "Seu código de confirmação — CIMATEC jr.",
     html: `
