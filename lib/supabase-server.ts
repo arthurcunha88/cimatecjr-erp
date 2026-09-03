@@ -1,15 +1,19 @@
 import { createClient } from "@supabase/supabase-js";
 
-const url  = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const key  = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const key = process.env.SUPABASE_SECRET_KEY;
 
 if (!url || !key) {
   throw new Error(
-    "Supabase env vars are missing. Check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY."
+    "Supabase env vars are missing. Check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SECRET_KEY."
   );
 }
 
-// Service role — nunca exposto ao browser
+// Secret key — SOMENTE no servidor.
+// Nunca utilizar NEXT_PUBLIC_ nesta chave.
 export const supabaseAdmin = createClient(url, key, {
-  auth: { persistSession: false },
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+  },
 });
