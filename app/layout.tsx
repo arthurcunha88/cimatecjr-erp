@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className="font-sans bg-[#f9f9f9] flex flex-col min-h-screen">
-        <header className="bg-[#1a1c1c] px-6 py-3.5 flex items-center justify-between">
+        <header className="bg-white border-b border-[#e5e5e5] shadow-[0_2px_10px_rgba(0,0,0,0.06)] px-6 py-3.5 flex items-center justify-between relative z-10">
           <div className="flex items-center">
             <Image
               src="/logo-cimatecjr.svg"
@@ -27,7 +27,7 @@ export default function RootLayout({
             />
           </div>
 
-          <span className="text-[#888] text-[12px]">
+          <span className="text-[#666] text-[12px] font-medium">
             Cadastro de Membro
           </span>
         </header>

@@ -1,6 +1,8 @@
 import MemberForm from "@/components/form/MemberForm";
 
-export const metadata = { title: "Cadastro de Membro — CIMATEC jr." };
+export const metadata = {
+  title: "Cadastro de Membro — CIMATEC jr",
+};
 
 export default function CadastroPage() {
   return (
