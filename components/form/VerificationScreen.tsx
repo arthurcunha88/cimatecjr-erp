@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, MailCheck } from "lucide-react";
+import {
+  Loader2,
+  MailCheck,
+} from "lucide-react";
 
 interface Props {
   email: string;
@@ -14,13 +17,18 @@ export default function VerificationScreen({
   isPending,
   onVerify,
 }: Props) {
-  const [otc, setOtc] = useState("");
-  const [error, setError] = useState("");
+  const [otc, setOtc] =
+    useState("");
+  const [error, setError] =
+    useState("");
 
   function handleSubmit() {
-    const normalized = otc.replace(/\D/g, "");
+    const normalized =
+      otc.replace(/\D/g, "");
 
-    if (normalized.length !== 5) {
+    if (
+      normalized.length !== 5
+    ) {
       setError(
         "Digite o código de 5 dígitos recebido por e-mail."
       );
@@ -31,9 +39,13 @@ export default function VerificationScreen({
     onVerify(normalized);
   }
 
-  function handleChange(value: string) {
+  function handleChange(
+    value: string
+  ) {
     setOtc(
-      value.replace(/\D/g, "").slice(0, 5)
+      value
+        .replace(/\D/g, "")
+        .slice(0, 5)
     );
 
     if (error) {
@@ -42,29 +54,34 @@ export default function VerificationScreen({
   }
 
   return (
-    <div className="text-center py-4 space-y-6">
-      <div className="w-16 h-16 rounded-full bg-[#f5f5f5] flex items-center justify-center mx-auto">
+    <div className="w-full text-center py-2 sm:py-4 space-y-5 sm:space-y-6">
+      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#f5f5f5] flex items-center justify-center mx-auto">
+        <MailCheck
+          size={28}
+          className="text-[#c8181e] sm:hidden"
+        />
+
         <MailCheck
           size={32}
-          className="text-[#c8181e]"
+          className="text-[#c8181e] hidden sm:block"
         />
       </div>
 
-      <div>
-        <h2 className="text-[20px] font-bold text-[#1a1c1c]">
+      <div className="px-1">
+        <h2 className="text-[19px] sm:text-[20px] font-bold text-[#1a1c1c]">
           Verifique seu e-mail
         </h2>
 
-        <p className="text-[13px] text-[#5f5e5e] mt-2 leading-relaxed max-w-md mx-auto">
+        <p className="text-[12px] sm:text-[13px] text-[#5f5e5e] mt-2 leading-relaxed max-w-md mx-auto break-words">
           Enviamos um código de confirmação para{" "}
-          <strong className="text-[#1a1c1c]">
+          <strong className="text-[#1a1c1c] break-all">
             {email}
           </strong>
           .
         </p>
       </div>
 
-      <div className="space-y-3 max-w-xs mx-auto">
+      <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-3">
         <label
           htmlFor="otc"
           className="block text-left text-[12px] font-medium text-[#555]"
@@ -81,7 +98,9 @@ export default function VerificationScreen({
           autoFocus
           value={otc}
           onChange={(event) =>
-            handleChange(event.target.value)
+            handleChange(
+              event.target.value
+            )
           }
           onKeyDown={(event) => {
             if (event.key === "Enter") {
@@ -89,11 +108,11 @@ export default function VerificationScreen({
             }
           }}
           placeholder="00000"
-          className="w-full h-14 rounded-lg border border-[#d1d1d1] bg-white text-center text-[26px] font-bold tracking-[10px] font-mono text-[#1a1c1c] outline-none focus:border-[#c8181e] focus:ring-2 focus:ring-[#c8181e]/10"
+          className="w-full h-14 rounded-lg border border-[#d1d1d1] bg-white text-center text-[24px] sm:text-[26px] font-bold tracking-[8px] sm:tracking-[10px] font-mono text-[#1a1c1c] outline-none focus:border-[#c8181e] focus:ring-2 focus:ring-[#c8181e]/10"
         />
 
         {error && (
-          <p className="text-[11px] text-[#ba1a1a] text-left">
+          <p className="text-[11px] text-[#ba1a1a] text-left leading-relaxed">
             {error}
           </p>
         )}
@@ -106,24 +125,27 @@ export default function VerificationScreen({
           type="button"
           onClick={handleSubmit}
           disabled={
-            isPending || otc.length !== 5
+            isPending ||
+            otc.length !== 5
           }
-          className="w-full h-11 rounded-lg text-[14px] font-semibold text-white bg-[#c8181e] hover:bg-[#a81419] disabled:opacity-50 disabled:pointer-events-none transition-colors flex items-center justify-center gap-2"
+          className="w-full min-h-11 px-4 py-2.5 rounded-lg text-[13px] sm:text-[14px] font-semibold leading-tight text-white bg-[#c8181e] hover:bg-[#a81419] disabled:opacity-50 disabled:pointer-events-none transition-colors flex items-center justify-center gap-2 text-center"
         >
           {isPending && (
             <Loader2
               size={15}
-              className="animate-spin"
+              className="animate-spin shrink-0"
             />
           )}
 
-          {isPending
-            ? "Verificando..."
-            : "Confirmar e-mail"}
+          <span className="whitespace-normal">
+            {isPending
+              ? "Verificando..."
+              : "Confirmar e-mail"}
+          </span>
         </button>
       </div>
 
-      <p className="text-[12px] text-[#aaa]">
+      <p className="text-[11px] sm:text-[12px] text-[#aaa] leading-relaxed px-2">
         Não recebeu? Verifique também sua pasta de spam.
       </p>
     </div>

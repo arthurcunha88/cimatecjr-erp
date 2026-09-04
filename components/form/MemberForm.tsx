@@ -243,12 +243,12 @@ export default function MemberForm() {
   // ==========================================================
 
   return (
-    <div>
+    <div className="w-full">
       <FormProgress
         currentStep={step}
       />
 
-      <hr className="border-[#e5e5e5] mb-6" />
+      <hr className="border-[#e5e5e5] mb-5 sm:mb-6" />
 
       {/* ======================================================
           ERRO DO SERVIDOR
@@ -256,13 +256,13 @@ export default function MemberForm() {
 
       {actionState.status ===
         "error" && (
-        <div className="mb-4 rounded-lg bg-[#fff0f0] border border-[#f5c6c6] px-4 py-3 text-[13px] text-[#ba1a1a]">
+        <div className="mb-4 rounded-lg bg-[#fff0f0] border border-[#f5c6c6] px-3 py-3 sm:px-4 text-[13px] text-[#ba1a1a]">
           <p>
             {actionState.message}
           </p>
 
           {actionState.code && (
-            <p className="mt-2 text-[11px] font-mono text-[#8a3a3a]">
+            <p className="mt-2 text-[11px] font-mono text-[#8a3a3a] break-words">
               Código técnico:{" "}
               {actionState.code}
             </p>
@@ -276,7 +276,7 @@ export default function MemberForm() {
 
       {actionState.status ===
         "validation_error" && (
-        <div className="mb-4 rounded-lg bg-[#fff0f0] border border-[#f5c6c6] px-4 py-3 text-[13px] text-[#ba1a1a]">
+        <div className="mb-4 rounded-lg bg-[#fff0f0] border border-[#f5c6c6] px-3 py-3 sm:px-4 text-[13px] text-[#ba1a1a]">
           Verifique os campos
           preenchidos.
         </div>
@@ -343,41 +343,46 @@ export default function MemberForm() {
           NAVEGAÇÃO
       ======================================================= */}
 
-      <div className="flex justify-between items-center mt-6 pt-5 border-t border-[#e5e5e5]">
-        <button
-          type="button"
-          onClick={goBack}
-          disabled={
-            step === 1 ||
-            isPending
-          }
-          className="h-10 px-5 rounded-lg text-[14px] font-medium border border-[#d1d1d1] text-[#555] bg-white hover:bg-[#f5f5f5] disabled:opacity-30 disabled:pointer-events-none transition-colors"
-        >
-          Voltar
-        </button>
+      <div className="mt-6 pt-5 border-t border-[#e5e5e5]">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
 
-        <span className="text-[12px] text-[#999]">
-          Etapa {step} de{" "}
-          {TOTAL_STEPS}
-        </span>
+          <button
+            type="button"
+            onClick={goBack}
+            disabled={
+              step === 1 ||
+              isPending
+            }
+            className="order-2 sm:order-1 w-full sm:w-auto min-w-0 sm:min-w-[90px] h-11 px-5 rounded-lg text-[14px] font-medium border border-[#d1d1d1] text-[#555] bg-white hover:bg-[#f5f5f5] disabled:opacity-30 disabled:pointer-events-none transition-colors"
+          >
+            Voltar
+          </button>
 
-        <button
-          type="button"
-          onClick={goNext}
-          disabled={isPending}
-          className="h-10 px-6 rounded-lg text-[14px] font-semibold text-white bg-[#c8181e] hover:bg-[#a81419] disabled:opacity-60 disabled:pointer-events-none transition-colors flex items-center gap-2"
-        >
-          {isPending && (
-            <Loader2
-              size={14}
-              className="animate-spin"
-            />
-          )}
+          <span className="order-1 sm:order-2 text-center text-[12px] text-[#999]">
+            Etapa {step} de{" "}
+            {TOTAL_STEPS}
+          </span>
 
-          {step === TOTAL_STEPS
-            ? "Enviar código por e-mail"
-            : "Continuar"}
-        </button>
+          <button
+            type="button"
+            onClick={goNext}
+            disabled={isPending}
+            className="order-3 w-full sm:w-auto min-w-0 sm:min-w-[110px] min-h-11 px-4 sm:px-6 py-2.5 rounded-lg text-[14px] sm:text-[14px] font-semibold leading-tight text-white bg-[#c8181e] hover:bg-[#a81419] disabled:opacity-60 disabled:pointer-events-none transition-colors flex items-center justify-center gap-2 text-center"
+          >
+            {isPending && (
+              <Loader2
+                size={14}
+                className="animate-spin shrink-0"
+              />
+            )}
+
+            <span className="whitespace-normal">
+              {step === TOTAL_STEPS
+                ? "Enviar código por e-mail"
+                : "Continuar"}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );
