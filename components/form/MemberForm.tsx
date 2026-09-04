@@ -344,7 +344,7 @@ export default function MemberForm() {
       ======================================================= */}
 
       <div className="mt-6 pt-5 border-t border-[#e5e5e5]">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+        <div className="flex items-center justify-between gap-4">
 
           <button
             type="button"
@@ -353,21 +353,16 @@ export default function MemberForm() {
               step === 1 ||
               isPending
             }
-            className="order-2 sm:order-1 w-full sm:w-auto min-w-0 sm:min-w-[90px] h-11 px-5 rounded-lg text-[14px] font-medium border border-[#d1d1d1] text-[#555] bg-white hover:bg-[#f5f5f5] disabled:opacity-30 disabled:pointer-events-none transition-colors"
+            className="w-auto min-w-[90px] h-11 px-5 rounded-lg text-[14px] font-medium border border-[#d1d1d1] text-[#555] bg-white hover:bg-[#f5f5f5] disabled:opacity-30 disabled:pointer-events-none transition-colors"
           >
             Voltar
           </button>
-
-          <span className="order-1 sm:order-2 text-center text-[12px] text-[#999]">
-            Etapa {step} de{" "}
-            {TOTAL_STEPS}
-          </span>
 
           <button
             type="button"
             onClick={goNext}
             disabled={isPending}
-            className="order-3 w-full sm:w-auto min-w-0 sm:min-w-[110px] min-h-11 px-4 sm:px-6 py-2.5 rounded-lg text-[14px] sm:text-[14px] font-semibold leading-tight text-white bg-[#c8181e] hover:bg-[#a81419] disabled:opacity-60 disabled:pointer-events-none transition-colors flex items-center justify-center gap-2 text-center"
+            className="w-auto min-w-[110px] min-h-11 px-5 sm:px-6 py-2.5 rounded-lg text-[14px] font-semibold leading-tight text-white bg-[#c8181e] hover:bg-[#a81419] disabled:opacity-60 disabled:pointer-events-none transition-colors flex items-center justify-center gap-2 text-center"
           >
             {isPending && (
               <Loader2
@@ -382,6 +377,7 @@ export default function MemberForm() {
                 : "Continuar"}
             </span>
           </button>
+
         </div>
       </div>
     </div>

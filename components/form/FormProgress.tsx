@@ -20,6 +20,7 @@ export default function FormProgress({
 
   return (
     <div className="mb-5 sm:mb-6">
+      {/* Indicador das etapas */}
       <div className="flex items-center w-full">
         {STEPS.map((step, idx) => {
           const num = idx + 1;
@@ -31,7 +32,7 @@ export default function FormProgress({
               key={num}
               className="flex items-center flex-1 last:flex-none min-w-0"
             >
-              {/* circle + label */}
+              {/* Círculo + nome da etapa */}
               <div className="flex flex-col items-center gap-1 shrink-0">
                 <div
                   className={cn(
@@ -71,9 +72,8 @@ export default function FormProgress({
                 </span>
               </div>
 
-              {/* connector line */}
-              {idx <
-                STEPS.length - 1 && (
+              {/* Linha entre as etapas */}
+              {idx < STEPS.length - 1 && (
                 <div
                   className={cn(
                     "flex-1 min-w-[12px] h-0.5 mx-1 sm:mx-2 mb-4 transition-all",
@@ -88,14 +88,14 @@ export default function FormProgress({
         })}
       </div>
 
-      {/* Nome da etapa atual no mobile */}
-      <div className="sm:hidden text-center mt-2">
+      {/* Informação da etapa atual */}
+      <div className="text-center mt-2">
         <p className="text-[12px] font-semibold text-[#c8181e]">
           {currentLabel}
         </p>
+
         <p className="text-[10px] text-[#999] mt-0.5">
-          Etapa {currentStep} de{" "}
-          {STEPS.length}
+          Etapa {currentStep} de {STEPS.length}
         </p>
       </div>
     </div>
