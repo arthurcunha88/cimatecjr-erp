@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import CopyEmail from "@/components/CopyEmail";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -37,12 +38,7 @@ export default function RootLayout({
         <footer className="bg-white border-t border-[#e5e5e5] py-3.5 px-6 text-center">
           <p className="text-[11px] text-[#aaa]">
             © {new Date().getFullYear()} CIMATEC jr ·{" "}
-            <a
-              href="mailto:dgg@cimatecjr.com.br"
-              className="text-[#c8181e] hover:underline"
-            >
-              dgg@cimatecjr.com.br
-            </a>
+            <CopyEmail />
           </p>
         </footer>
       </body>
