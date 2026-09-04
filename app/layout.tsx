@@ -38,10 +38,10 @@ export default function RootLayout({
           <p className="text-[11px] text-[#aaa]">
             © {new Date().getFullYear()} CIMATEC jr ·{" "}
             <a
-              href="mailto:contato@cimatecjr.com.br"
+              href="mailto:dgg@cimatecjr.com.br"
               className="text-[#c8181e] hover:underline"
             >
-              contato@cimatecjr.com.br
+              dgg@cimatecjr.com.br
             </a>
           </p>
         </footer>
